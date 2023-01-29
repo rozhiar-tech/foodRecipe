@@ -13,19 +13,20 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  Future getFoodsFromFirebase() async {
-    var firestore = FirebaseFirestore.instance;
-    QuerySnapshot qn = await firestore.collection("Foods").get();
-    print(qn.docs);
-    return qn.docs;
-  }
+//   Future getFoodsFromFirebase() async {
+//     QuerySnapshot qn = await firestore.collection("Foods").get();
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    getFoodsFromFirebase();
-  }
+//     return qn.docs;
+//   }
+
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   // getFoodsFromFirebase();
+  // }
+
+  var firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -288,7 +289,110 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 280,
+                left: 20,
+              ),
+              child: Row(
+                children: [
+                  StreamBuilder(
+                    stream: firestore.collection("Foods").snapshots(),
+                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.hasData) {
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: snapshot.data!.docs.length,
+                          itemBuilder: (context, index) {
+                            DocumentSnapshot food = snapshot.data!.docs[index];
+                            return FoodCard(
+                              foodName: food["name"],
+                              foodImage: food["image"],
+                              foodIngredients: food["ingredients"],
+                            );
+                          },
+                        );
+                      }
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.blue,
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class FoodCard extends StatelessWidget {
+  var foodName;
+
+  var foodIngredients;
+
+  var foodImage;
+
+  FoodCard({this.foodName, this.foodIngredients, this.foodImage});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Container(
+        width: 150,
+        height: 180,
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(3.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: Image.network(
+                    "$foodImage",
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Text(
+                "$foodName",
+                style: TextStyle(
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  for (var i = 0; i < foodIngredients.length; i++)
+                    Padding(
+                      padding: const EdgeInsets.all(3.0),
+                      child: Text(
+                        "${foodIngredients[i]}",
+                        style: TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
