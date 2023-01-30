@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -26,6 +27,17 @@ class _HomeState extends State<Home> {
   //   // getFoodsFromFirebase();
   // }
 
+  var selectedCategory = "All";
+
+  List categories = [
+    "All",
+    "Breakfast",
+    "Lunch",
+    "Dinner",
+    "Snacks",
+    "Desserts",
+    "Drinks"
+  ];
   var firestore = FirebaseFirestore.instance;
 
   @override
@@ -152,7 +164,7 @@ class _HomeState extends State<Home> {
                 ],
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(
                 top: 190,
                 left: 20,
@@ -174,117 +186,25 @@ class _HomeState extends State<Home> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    Container(
-                      width: 60,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          "All",
-                          style: TextStyle(
-                            color: Colors.white,
+                    for (var category in categories)
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            selectedCategory = category;
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          child: Text(category),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: category == selectedCategory
+                                  ? Colors.blue
+                                  : Colors.transparent,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Container(
-                      width: 60,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          "Pizza",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Container(
-                      width: 60,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          "Burger",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Container(
-                      width: 60,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          "Pasta",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Container(
-                      width: 60,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          "Salad",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Container(
-                      width: 60,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          "Dessert",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -294,33 +214,32 @@ class _HomeState extends State<Home> {
                 top: 280,
                 left: 20,
               ),
-              child: Row(
-                children: [
-                  StreamBuilder(
-                    stream: firestore.collection("Foods").snapshots(),
-                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.hasData) {
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: snapshot.data!.docs.length,
-                          itemBuilder: (context, index) {
-                            DocumentSnapshot food = snapshot.data!.docs[index];
-                            return FoodCard(
-                              foodName: food["name"],
-                              foodImage: food["image"],
-                              foodIngredients: food["ingredients"],
-                            );
-                          },
+              child: StreamBuilder(
+                stream: firestore
+                    .collection("Foods")
+                    .where("category", isEqualTo: selectedCategory)
+                    .snapshots(),
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot food = snapshot.data!.docs[index];
+                        return FoodCard(
+                          foodName: food["name"],
+                          foodIngredients: food["ingredients"],
+                          foodImage: food["image"],
                         );
-                      }
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.blue,
-                        ),
-                      );
-                    },
-                  ),
-                ],
+                      },
+                    );
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.blue,
+                    ),
+                  );
+                },
               ),
             ),
           ],
@@ -341,58 +260,169 @@ class FoodCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        width: 150,
-        height: 180,
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(10),
+    return Padding(
+      padding: const EdgeInsets.all(40.0),
+      child: InkWell(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FoodDetails(
+              foodName: foodName,
+              foodIngredients: foodIngredients,
+              foodImage: foodImage,
+            ),
+          ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(3.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(50),
-                  child: Image.network(
-                    "$foodImage",
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.cover,
+        child: Container(
+          width: 150,
+          height: 180,
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(3.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: Image.network(
+                      "$foodImage",
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  "$foodName",
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    for (var i = 0; i < foodIngredients.length; i++)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 2.0, left: 20),
+                        child: Text(
+                          "${foodIngredients[i]}",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class FoodDetails extends StatelessWidget {
+  var foodName;
+
+  var foodIngredients;
+
+  var foodImage;
+
+  FoodDetails({this.foodName, this.foodIngredients, this.foodImage});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+          ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 20,
+                top: 20,
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              Text(
+              child: Text(
                 "$foodName",
                 style: TextStyle(
-                  color: Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(
-                height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 20,
+                top: 20,
               ),
-              Row(
+              child: Row(
                 children: [
                   for (var i = 0; i < foodIngredients.length; i++)
                     Padding(
-                      padding: const EdgeInsets.all(3.0),
+                      padding: const EdgeInsets.only(bottom: 2.0, left: 20),
                       child: Text(
                         "${foodIngredients[i]}",
                         style: TextStyle(
                           color: Colors.grey,
+                          fontSize: 18,
                         ),
                       ),
                     ),
                 ],
-              )
-            ],
-          ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 20,
+                top: 20,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(50),
+                child: Image.network(
+                  "$foodImage",
+                  width: 300,
+                  height: 300,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 20,
+                top: 20,
+              ),
+              child: Text(
+                "Steps",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
