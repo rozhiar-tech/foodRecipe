@@ -2,9 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:foodrecipe/screens/faviorates.dart';
+import 'package:foodrecipe/screens/addFood.dart';
+// import 'package:foodrecipe/screens/faviorates.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:foodrecipe/screens/ingredients.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -30,7 +32,6 @@ class _HomeState extends State<Home> {
   var selectedCategory = "All";
 
   List categories = [
-    "All",
     "Breakfast",
     "Lunch",
     "Dinner",
@@ -51,12 +52,12 @@ class _HomeState extends State<Home> {
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.favorite),
-              label: 'Favorites',
+              icon: Icon(Icons.list),
+              label: 'Ingredients',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
+              icon: Icon(Icons.add),
+              label: 'Add Food',
             ),
           ],
           currentIndex: 0,
@@ -74,13 +75,13 @@ class _HomeState extends State<Home> {
               case 1:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Faviortes()),
+                  MaterialPageRoute(builder: (context) => const Ingredients()),
                 );
                 break;
               case 2:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Home()),
+                  MaterialPageRoute(builder: (context) => const AddFood()),
                 );
                 break;
             }
@@ -193,14 +194,16 @@ class _HomeState extends State<Home> {
                             selectedCategory = category;
                           });
                         },
-                        child: Container(
-                          padding: EdgeInsets.all(8),
-                          child: Text(category),
-                          decoration: BoxDecoration(
-                            border: Border.all(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            padding: EdgeInsets.all(8),
+                            child: Text(category),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
                               color: category == selectedCategory
-                                  ? Colors.blue
-                                  : Colors.transparent,
+                                  ? Colors.green
+                                  : Colors.grey[200]!,
                             ),
                           ),
                         ),
