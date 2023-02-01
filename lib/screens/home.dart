@@ -34,10 +34,7 @@ class _HomeState extends State<Home> {
   List categories = [
     "Breakfast",
     "Lunch",
-    "Dinner",
-    "Snacks",
     "Desserts",
-    "Drinks"
   ];
   var firestore = FirebaseFirestore.instance;
 
