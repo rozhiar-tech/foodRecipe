@@ -31,11 +31,8 @@ class _HomeState extends State<Home> {
 
   var selectedCategory = "All";
 
-  List categories = [
-    "Breakfast",
-    "Lunch",
-    "Desserts",
-  ];
+  List categories = ["Breakfast", "Lunch", "Desserts", "jjjjk"];
+
   var firestore = FirebaseFirestore.instance;
 
   @override
@@ -419,6 +416,19 @@ class FoodDetails extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 20,
+                top: 20,
+              ),
+              child: Text(
+                "1. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 18,
                 ),
               ),
             ),
