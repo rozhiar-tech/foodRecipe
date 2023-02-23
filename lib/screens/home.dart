@@ -228,6 +228,7 @@ class _HomeState extends State<Home> {
                           foodName: food["name"],
                           foodIngredients: food["ingredients"],
                           foodImage: food["image"],
+                          foodSteps: food["steps"],
                         );
                       },
                     );
@@ -254,7 +255,9 @@ class FoodCard extends StatelessWidget {
 
   var foodImage;
 
-  FoodCard({this.foodName, this.foodIngredients, this.foodImage});
+  var foodSteps;
+  FoodCard(
+      {this.foodName, this.foodIngredients, this.foodImage, this.foodSteps});
 
   @override
   Widget build(BuildContext context) {
@@ -268,6 +271,7 @@ class FoodCard extends StatelessWidget {
               foodName: foodName,
               foodIngredients: foodIngredients,
               foodImage: foodImage,
+              foodSteps: foodSteps,
             ),
           ),
         ),
@@ -337,8 +341,10 @@ class FoodDetails extends StatelessWidget {
   var foodIngredients;
 
   var foodImage;
+  var foodSteps;
 
-  FoodDetails({this.foodName, this.foodIngredients, this.foodImage});
+  FoodDetails(
+      {this.foodName, this.foodIngredients, this.foodImage, this.foodSteps});
 
   @override
   Widget build(BuildContext context) {
@@ -427,7 +433,7 @@ class FoodDetails extends StatelessWidget {
                 top: 20,
               ),
               child: Text(
-                "1. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+                "$foodSteps",
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: 18,

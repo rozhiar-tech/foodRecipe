@@ -25,15 +25,21 @@ class _AddFoodState extends State<AddFood> {
   String categoryController = "";
   List ingredientsController = [];
   String imageController = "";
+  String stepsController = "";
 
-  Future AddFood(name, category, ingredients, Image) async {
+  Future AddFood(name, category, ingredients, Image, stepsController) async {
     await firestore.collection('Foods').add({
       'name': name,
       'category': category,
       'ingredients': ingredients,
       'image': Image,
+      'steps': stepsController,
     });
-    if (name == "" || category == "" || ingredients == "" || Image == "") {
+    if (name == "" ||
+        category == "" ||
+        ingredients == "" ||
+        Image == "" ||
+        stepsController == "") {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please fill in all fields'),
@@ -254,6 +260,41 @@ class _AddFoodState extends State<AddFood> {
                         ),
                       ),
                     ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      'Steps',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      width: 300,
+                      child: TextField(
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
+                        onChanged: (value) => {
+                          setState(() {
+                            stepsController = value;
+                          }),
+                        },
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: 'Enter Steps',
+                          hintStyle: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
                     ElevatedButton(
                       onPressed: () {
                         AddFood(
@@ -261,6 +302,7 @@ class _AddFoodState extends State<AddFood> {
                           categoryController,
                           ingredientsController,
                           imageController,
+                          stepsController,
                         );
                       },
                       child: const Text('Add Food'),
