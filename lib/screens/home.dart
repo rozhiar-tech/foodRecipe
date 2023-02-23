@@ -7,6 +7,7 @@ import 'package:foodrecipe/screens/addFood.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:foodrecipe/screens/ingredients.dart';
+import 'package:foodrecipe/screens/login.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -31,7 +32,7 @@ class _HomeState extends State<Home> {
 
   var selectedCategory = "All";
 
-  List categories = ["Breakfast", "Lunch", "Desserts", "jjjjk"];
+  List categories = ["Breakfast", "Lunch", "Desserts", "Dinner"];
 
   var firestore = FirebaseFirestore.instance;
 
@@ -75,7 +76,7 @@ class _HomeState extends State<Home> {
               case 2:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const AddFood()),
+                  MaterialPageRoute(builder: (context) => const Login()),
                 );
                 break;
             }
@@ -306,21 +307,21 @@ class FoodCard extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                Row(
-                  children: [
-                    for (var i = 0; i < foodIngredients.length; i++)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 2.0, left: 20),
-                        child: Text(
-                          "${foodIngredients[i]}",
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ),
-                  ],
-                )
+                // Row(
+                //   children: [
+                //     for (var i = 0; i < foodIngredients.length; i++)
+                //       Padding(
+                //         padding: const EdgeInsets.only(bottom: 2.0, left: 20),
+                //         child: Text(
+                //           "${foodIngredients[i]}",
+                //           style: TextStyle(
+                //             color: Colors.grey,
+                //             fontSize: 18,
+                //           ),
+                //         ),
+                //       ),
+                //   ],
+                // )
               ],
             ),
           ),
@@ -375,7 +376,8 @@ class FoodDetails extends StatelessWidget {
                 left: 20,
                 top: 20,
               ),
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   for (var i = 0; i < foodIngredients.length; i++)
                     Padding(

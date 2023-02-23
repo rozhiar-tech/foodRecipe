@@ -203,21 +203,21 @@ class FoodCard extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                Row(
-                  children: [
-                    for (var i = 0; i < foodIngredients.length; i++)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 2.0, left: 20),
-                        child: Text(
-                          "${foodIngredients[i]}",
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ),
-                  ],
-                )
+                // Row(
+                //   children: [
+                //     for (var i = 0; i < foodIngredients.length; i++)
+                //       Padding(
+                //         padding: const EdgeInsets.only(bottom: 2.0, left: 20),
+                //         child: Text(
+                //           "${foodIngredients[i]}",
+                //           style: TextStyle(
+                //             color: Colors.grey,
+                //             fontSize: 18,
+                //           ),
+                //         ),
+                //       ),
+                //   ],
+                // )
               ],
             ),
           ),
